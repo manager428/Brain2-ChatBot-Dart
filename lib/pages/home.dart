@@ -6,14 +6,14 @@ import '../components/rounded_icon_button.dart';
 import '../components/rounded_second_icon_button.dart';
 import '../components/second_text_button.dart';
 
-class AskPage extends StatefulWidget {
-  const AskPage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  AskPageState createState() => AskPageState();
+  HomePageState createState() => HomePageState();
 }
 
-class AskPageState extends State<AskPage> {
+class HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
   @override
   Widget build(BuildContext context) {

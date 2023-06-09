@@ -1,5 +1,5 @@
 import 'package:chat/components/rounded_icon_button.dart';
-import 'package:chat/pages/ask.dart';
+import 'package:chat/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -444,7 +444,7 @@ class UnlockPageState extends State<UnlockPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const AskPage()),
+                            builder: (context) => const HomePage()),
                       );
                     }),
               ),
