@@ -94,7 +94,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: Color(0xffffffff),
                       ),
                     ),
-                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 24, left: 34, right: 34),
+                  child: Text(
+                    "Welcome to the new era of Al-powered conversations with Ask Al.",
+                    style: GoogleFonts.lato(
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        color: Color(0xffffffff),
+                      ),
+                    ),
                   ),
                 ),
               ],
