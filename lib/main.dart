@@ -1,6 +1,10 @@
+import 'package:chat/components/main_text_button.dart';
+import 'package:chat/pages/onboarding2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'components/rounded_border_text.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -103,7 +107,117 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                         fontSize: 18,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 54, left: 15),
+                  alignment: Alignment.centerLeft,
+                  child: const RoundedBorderText(
+                    text: 'Available in all languages',
+                    borderRadius: 30.0,
+                    borderColor: Colors.white24,
+                    borderWidth: 1.0,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 10, left: 15),
+                  alignment: Alignment.centerLeft,
+                  child: const RoundedBorderText(
+                    text: 'Al remembers your dialogue',
+                    borderRadius: 30.0,
+                    borderColor: Colors.white24,
+                    borderWidth: 1.0,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 10, left: 15),
+                      alignment: Alignment.centerLeft,
+                      child: const RoundedBorderText(
+                        text: 'Ask any question',
+                        borderRadius: 30.0,
+                        borderColor: Colors.white24,
+                        borderWidth: 1.0,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 10, left: 8),
+                      alignment: Alignment.centerLeft,
+                      child: const RoundedBorderText(
+                        text: 'Powered by GPT3.5',
+                        borderRadius: 30.0,
+                        borderColor: Colors.white24,
+                        borderWidth: 1.0,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 35, left: 15, right: 15),
+                  height: 70,
+                  width: MediaQuery.of(context).size.width,
+                  child: MainTextButton(
+                      text: "Let's go!",
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Onboarding2Page()),
+                        );
+                      }),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 20, left: 33, right: 33),
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'By continuing, you agree to our ',
+                      style: GoogleFonts.lato(
+                        textStyle: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.white54,
+                        ),
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: ' Privacy Policy ',
+                          style: GoogleFonts.lato(
+                            textStyle: const TextStyle(
+                                color: Color(0xffffffff),
+                                decoration: TextDecoration.underline),
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' &.',
+                          style: GoogleFonts.lato(
+                            textStyle: const TextStyle(
+                              color: Color(0xffffffff),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 8, left: 34, right: 34),
+                  child: Text(
+                    "Terms of Use",
+                    style: GoogleFonts.lato(
+                      textStyle: const TextStyle(
+                        fontSize: 13,
                         color: Color(0xffffffff),
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.white,
                       ),
                     ),
                   ),

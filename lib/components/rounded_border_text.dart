@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RoundedBorderText extends StatelessWidget {
   final String text;
@@ -8,11 +9,11 @@ class RoundedBorderText extends StatelessWidget {
   final EdgeInsets padding;
 
   const RoundedBorderText({
-    required Key key,
+    Key? key,
     required this.text,
     this.borderRadius = 20.0,
     this.borderColor = Colors.grey,
-    this.borderWidth = 2.0,
+    this.borderWidth = 1.0,
     this.padding = const EdgeInsets.all(10),
   }) : super(key: key);
 
@@ -27,7 +28,15 @@ class RoundedBorderText extends StatelessWidget {
           width: borderWidth,
         ),
       ),
-      child: Text(text),
+      child: Text(
+        text,
+        style: GoogleFonts.lato(
+          textStyle: const TextStyle(
+            fontSize: 16,
+            color: Color(0xffffffff),
+          ),
+        ),
+      ),
     );
   }
 }
