@@ -1,4 +1,8 @@
+import 'package:chat/pages/ask.dart';
+import 'package:chat/pages/history.dart';
+import 'package:chat/pages/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../components/main_text_button.dart';
@@ -48,7 +52,11 @@ class HomePageState extends State<HomePage> {
                     child: RoundedIconButton(
                       icon: const Icon(Icons.settings),
                       onPressed: () {
-                        // do something when button is pressed
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SettingsPage()),
+                        );
                       },
                     ),
                   ),
@@ -57,16 +65,24 @@ class HomePageState extends State<HomePage> {
               Container(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 10,
+                  horizontal: 15,
                 ),
-                child: Text(
-                  'My History',
-                  style: GoogleFonts.lato(
-                    textStyle:
-                        const TextStyle(color: Colors.white, fontSize: 20),
+                child: TextButton(
+                  child: Text(
+                    'My History',
+                    style: GoogleFonts.lato(
+                      textStyle:
+                          const TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HistoryPage()),
+                    );
+                  },
                 ),
               ),
               Stack(
@@ -212,7 +228,15 @@ class HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 height: 70,
                 width: MediaQuery.of(context).size.width,
-                child: SecondTextButton(text: "Science Chat", onPressed: () {}),
+                child: SecondTextButton(
+                    text: "Science Chat",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AskPage()),
+                      );
+                    }),
               ),
               Container(
                 margin:
@@ -270,7 +294,7 @@ class HomePageState extends State<HomePage> {
                     child: Container(
                       margin: const EdgeInsets.only(left: 15),
                       child: RoundedSecondIconButton(
-                        icon: const Icon(Icons.send),
+                        icon: const Icon(FontAwesomeIcons.paperPlane),
                         onPressed: () {
                           // do something when button is pressed
                         },
