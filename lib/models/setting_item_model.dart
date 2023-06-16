@@ -1,4 +1,3 @@
-// Import the material library to use Icons
 import 'package:flutter/material.dart';
 
 class SettingItemModel {

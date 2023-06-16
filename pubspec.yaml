@@ -38,6 +38,14 @@ dependencies:
   flutter_native_splash: ^2.3.1
   google_fonts: ^5.0.0
   font_awesome_flutter: ^10.4.0
+  http: ^1.0.0
+  flutter_dotenv: ^5.1.0
+  lottie: ^2.4.0
+  validators: ^3.0.0
+  toast: ^0.3.0
+  animated_text_kit: ^4.2.2
+  share_plus: ^7.0.2
+  share_files_and_screenshot_widgets: ^1.0.6
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -64,6 +72,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

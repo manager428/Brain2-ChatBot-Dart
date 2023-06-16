@@ -1,4 +1,4 @@
-import 'package:chat/pages/unlock.dart';
+import 'package:chat/pages/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -234,9 +234,12 @@ class Onboarding3PageState extends State<Onboarding3Page> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const UnlockPage()),
+                            builder: (context) => const LoginScreen()),
                       );
                     }),
+              ),
+              const SizedBox(
+                height: 60,
               ),
             ],
           ),

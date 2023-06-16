@@ -1,13 +1,21 @@
 import 'package:chat/components/message_container_widgets.dart';
+import 'package:chat/models/chatgpt_message_model.dart';
+import 'package:chat/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:share_files_and_screenshot_widgets/share_files_and_screenshot_widgets.dart';
+import 'package:share_plus/share_plus.dart';
+import '../apis/chatgpt_api.dart';
 import '../components/rounded_icon_button.dart';
 import '../components/rounded_second_icon_button.dart';
+import '../components/typing_indicator.dart';
 
 class AskPage extends StatefulWidget {
-  const AskPage({Key? key}) : super(key: key);
+  final String topic;
+  final String initialQuestion;
+  const AskPage({Key? key, required this.topic, required this.initialQuestion})
+      : super(key: key);
 
   @override
   AskPageState createState() => AskPageState();
@@ -15,9 +23,114 @@ class AskPage extends StatefulWidget {
 
 class AskPageState extends State<AskPage> {
   final TextEditingController _textController = TextEditingController();
-  List<String> messages = ["test!", "test", "test", "test"];
+  final _textFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
+
+  GlobalKey previewContainer = GlobalKey();
+  int originalSize = 800;
+  bool _isTyping = false;
+  List<ChatgptMessageModel> messages = [];
+  void _getAnswer(String question) async {
+    setState(() {
+      _isTyping = true;
+      messages.add(ChatgptMessageModel(text: question, flag: true));
+    });
+    _textController.clear();
+    _textFocusNode.unfocus();
+    GptService.getAnswer(question, widget.topic).then((value) {
+      if (value != null) {
+        String answer = value.trim();
+        setState(() {
+          messages.add(ChatgptMessageModel(text: answer, flag: false));
+        });
+        _isTyping = false;
+        Future.delayed(const Duration(milliseconds: 150), () {});
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    String initialQuestion = widget.initialQuestion;
+    if (initialQuestion != '') {
+      _getAnswer(widget.initialQuestion);
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    void settingModalBottomSheet(context) {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext bc) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Color(0xff644C8F),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: Wrap(
+                children: <Widget>[
+                  ListTile(
+                      leading: const Icon(
+                        Icons.text_fields,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                      title: Text(
+                        'Share Questions and Answers',
+                        style: GoogleFonts.lato(
+                          textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      onTap: () {
+                        String message = '';
+                        for (var e in messages) {
+                          if (e.flag) {
+                            message += 'Question: ${e.text}\n\n\n';
+                          } else {
+                            message += 'Answer: ${e.text}\n\n\n';
+                          }
+                        }
+                        Share.share(message);
+                      }),
+                  ListTile(
+                      leading: const Icon(
+                        Icons.screenshot,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                      title: Text(
+                        'Share Screenshot',
+                        style: GoogleFonts.lato(
+                          textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      onTap: () {
+                        ShareFilesAndScreenshotWidgets().shareScreenshot(
+                          previewContainer,
+                          originalSize,
+                          "Title",
+                          "screenshot.png",
+                          "image/png",
+                          text: "Look this screenshot.",
+                        );
+                      }),
+                ],
+              ),
+            );
+          });
+    }
+
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -36,7 +149,11 @@ class AskPageState extends State<AskPage> {
                   child: RoundedIconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () {
-                      // do something when button is pressed
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
                     },
                   ),
                 ),
@@ -61,77 +178,98 @@ class AskPageState extends State<AskPage> {
                       size: 20,
                     ),
                     onPressed: () {
-                      // do something when button is pressed
+                      settingModalBottomSheet(context);
                     },
                   ),
                 ),
               ],
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: messages.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index % 2 == 0) {
-                    return const QuestionWidget(
-                        widgetText:
-                            'Act like a Professor. You will give me new information. You will present interesting information from basic sciences. You can start by saying an interesting sentence about science.');
-                  } else {
-                    return const AnswerWidget(
-                        widgetText:
-                            'Certainly! Here\'s an interesting sentence to kick things off: "Science is the systematic and logical study of the natural world, based on observation, experimentation, and evidence."Now, let me share some fascinating information from the field of biology. Did you know that the largest organism on Earth is not a blue whale or an elephant, but a giant fungus? The fungus, known as Armillaria');
-                  }
-                },
+              child: RepaintBoundary(
+                key: previewContainer,
+                child: ListView.builder(
+                  reverse: true,
+                  shrinkWrap: true,
+                  controller: _scrollController,
+                  itemCount: messages.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (messages[messages.length - 1 - index].flag) {
+                      return QuestionWidget(
+                          widgetText:
+                              messages[messages.length - 1 - index].text);
+                    } else {
+                      bool flag = false;
+                      if (index == 0) {
+                        flag = true;
+                      }
+                      return AnswerWidget(
+                        widgetText: messages[messages.length - 1 - index].text,
+                        flag: flag,
+                      );
+                    }
+                  },
+                ),
               ),
             ),
-            Stack(
-              children: [
-                Container(
-                  height: 76,
-                  alignment: Alignment.center,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  decoration: BoxDecoration(
-                    color: const Color(
-                        0xff13131A), // Set the background color of text field.
-                    borderRadius: BorderRadius.circular(
-                        35), // Optionally, you can set the border radius.
-                  ),
-                  child: TextFormField(
-                    controller: _textController,
-                    decoration: InputDecoration(
-                      hintText: 'Write your message',
-                      hintStyle: GoogleFonts.lato(
-                        textStyle: const TextStyle(
-                            color: Color(0xff535353), fontSize: 16),
+            if (_isTyping) const TypingIndicator(),
+            SizedBox(
+              height: 130,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(right: 35),
+                      margin: const EdgeInsets.only(
+                          left: 15, right: 15, bottom: 10, top: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff13131A),
+                        borderRadius: BorderRadius.circular(35),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xff13131A), width: 1),
-                        borderRadius: BorderRadius.circular(35.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xff13131A), width: 1),
-                        borderRadius: BorderRadius.circular(35.0),
+                      child: TextFormField(
+                        controller: _textController,
+                        focusNode: _textFocusNode,
+                        cursorColor: Colors.white,
+                        decoration: InputDecoration(
+                          hintText: 'Write your message',
+                          hintStyle: GoogleFonts.lato(
+                            textStyle: const TextStyle(
+                                color: Color(0xff535353), fontSize: 16),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xff13131A), width: 1),
+                            borderRadius: BorderRadius.circular(35.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xff13131A), width: 1),
+                            borderRadius: BorderRadius.circular(35.0),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
                       ),
                     ),
-                    maxLines: null,
                   ),
-                ),
-                Positioned(
-                  bottom: 33,
-                  right: 22,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 15),
-                    child: RoundedSecondIconButton(
-                      icon: const Icon(FontAwesomeIcons.paperPlane),
-                      onPressed: () {
-                        // do something when button is pressed
-                      },
+                  Positioned(
+                    bottom: 17,
+                    right: 22,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 15),
+                      child: RoundedSecondIconButton(
+                        icon: const Icon(FontAwesomeIcons.paperPlane),
+                        onPressed: () {
+                          if (_textController.text != '') {
+                            _getAnswer(_textController.text);
+                          }
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           ],
         ),

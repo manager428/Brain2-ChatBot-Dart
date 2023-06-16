@@ -1,3 +1,6 @@
+import 'package:chat/components/subject_widget.dart';
+import 'package:chat/components/suggestions_widget.dart';
+import 'package:chat/models/subject_widget_model.dart';
 import 'package:chat/pages/ask.dart';
 import 'package:chat/pages/history.dart';
 import 'package:chat/pages/settings.dart';
@@ -8,7 +11,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../components/main_text_button.dart';
 import '../components/rounded_icon_button.dart';
 import '../components/rounded_second_icon_button.dart';
-import '../components/second_text_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,6 +21,46 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
+  final TextEditingController _textSecondController = TextEditingController();
+  List<String> suggestions = [
+    '📖   Education',
+    '🕺   Fun',
+    '📆   Daily Lifestyle'
+  ];
+  List<SubjectWidgetModel> subjects = [];
+  List<SubjectWidgetModel> testSubjects = [
+    const SubjectWidgetModel(
+        title: 'Science Chat',
+        topic: 'Science',
+        initialQuestion:
+            'Act like a Professor. You will give me new information. You will present interesting information from basic sciences. You can start by saying an interesting sentence about science.'),
+    const SubjectWidgetModel(
+        title: 'English Teacher',
+        topic: 'English Teaching',
+        initialQuestion:
+            'Act like a Professor. You will give me new information. You will present interesting information from basic English learning. You can start by saying an interesting sentence about English learning'),
+    const SubjectWidgetModel(
+        title: 'Translator',
+        topic: 'Translator',
+        initialQuestion:
+            'Act like a senior Translator. Translate this to French. Stay hungry, Stay foolish')
+  ];
+  List<SubjectWidgetModel> testSubjects1 = [
+    const SubjectWidgetModel(
+        title: 'Sports',
+        topic: 'Sports',
+        initialQuestion:
+            'Act like a sports narrator. Please tell me about sports match in detail.'),
+  ];
+  int i = 0;
+  @override
+  void initState() {
+    setState(() {
+      subjects = testSubjects;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,6 +133,8 @@ class HomePageState extends State<HomePage> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     child: TextFormField(
+                      style: GoogleFonts.lato(
+                          textStyle: const TextStyle(color: Colors.white)),
                       decoration: InputDecoration(
                         hintText: 'There is no conversation yet ',
                         hintStyle: GoogleFonts.lato(
@@ -118,7 +162,20 @@ class HomePageState extends State<HomePage> {
                     child: SizedBox(
                       height: 60,
                       width: 160,
-                      child: MainTextButton(text: "Start", onPressed: () {}),
+                      child: MainTextButton(
+                          text: "Start",
+                          onPressed: () {
+                            String initialQuestion = _textController.text;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AskPage(
+                                  topic: 'General',
+                                  initialQuestion: initialQuestion,
+                                ),
+                              ),
+                            );
+                          }),
                     ),
                   ),
                 ],
@@ -143,115 +200,52 @@ class HomePageState extends State<HomePage> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: <Widget>[
-                      ListView(
+                      ListView.builder(
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF191922),
-                                    Color.fromRGBO(100, 76, 143, 0.576131),
-                                    Color(0xFF3FAAA1),
-                                  ],
-                                  stops: [0.0, 0.3399, 1.0009],
-
-                                  // angle value is not directly supported in Flutter,
-                                  // but you can get similar results using the `begin` and `end` properties.
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                    30), // make the border radius here
-                                border: Border.all(
-                                    color: const Color(0xff644C8F), width: 1)),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            margin: const EdgeInsets.symmetric(horizontal: 6),
-                            child: const Text(
-                              '📖   Education',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff191922),
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                  color: const Color(0xff644C8F), width: 1),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            margin: const EdgeInsets.symmetric(horizontal: 6),
-                            child: const Text(
-                              '🕺   Fun',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff191922),
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                  color: const Color(0xff644C8F), width: 1),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            margin: const EdgeInsets.symmetric(horizontal: 6),
-                            child: const Text(
-                              '📆   Daily Lifestyl',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          // Add more widgets here as needed.
-                        ],
+                        itemCount: suggestions.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return SuggestionWidget(
+                            onTap: () {
+                              setState(() {
+                                i = index;
+                                if (index == 0) {
+                                  subjects = testSubjects;
+                                } else {
+                                  subjects = testSubjects1;
+                                }
+                              });
+                            },
+                            text: suggestions[index],
+                            active: i == index ? true : false,
+                          );
+                        },
                       ),
                     ],
                   ),
                 ),
               ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                height: 70,
-                width: MediaQuery.of(context).size.width,
-                child: SecondTextButton(
-                    text: "Science Chat",
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AskPage()),
-                      );
-                    }),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                height: 70,
-                width: MediaQuery.of(context).size.width,
-                child:
-                    SecondTextButton(text: "English Teacher", onPressed: () {}),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                height: 70,
-                width: MediaQuery.of(context).size.width,
-                child: SecondTextButton(text: "Translator", onPressed: () {}),
+              SizedBox(
+                height: MediaQuery.of(context).size.height - 610,
+                child: ListView.builder(
+                  itemCount: subjects.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return SubjectWidget(
+                      title: subjects[index].title,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AskPage(
+                              topic: subjects[index].topic,
+                              initialQuestion: subjects[index].initialQuestion,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
               Stack(
                 children: [
@@ -267,7 +261,9 @@ class HomePageState extends State<HomePage> {
                           35), // Optionally, you can set the border radius.
                     ),
                     child: TextFormField(
-                      controller: _textController,
+                      controller: _textSecondController,
+                      style: GoogleFonts.lato(
+                          textStyle: const TextStyle(color: Colors.white)),
                       decoration: InputDecoration(
                         hintText: 'Write your message',
                         hintStyle: GoogleFonts.lato(
@@ -296,7 +292,16 @@ class HomePageState extends State<HomePage> {
                       child: RoundedSecondIconButton(
                         icon: const Icon(FontAwesomeIcons.paperPlane),
                         onPressed: () {
-                          // do something when button is pressed
+                          String initialQuestion = _textSecondController.text;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AskPage(
+                                topic: 'General',
+                                initialQuestion: initialQuestion,
+                              ),
+                            ),
+                          );
                         },
                       ),
                     ),

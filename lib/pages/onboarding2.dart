@@ -214,6 +214,9 @@ class Onboarding2PageState extends State<Onboarding2Page> {
                       );
                     }),
               ),
+              const SizedBox(
+                height: 60,
+              ),
             ],
           ),
         ),

@@ -3,12 +3,13 @@ import 'package:chat/pages/onboarding2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'components/rounded_border_text.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -221,6 +222,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 60,
                 ),
               ],
             ),

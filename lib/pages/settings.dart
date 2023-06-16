@@ -4,6 +4,7 @@ import 'package:chat/models/setting_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import '../components/main_text_button.dart';
 import '../components/rounded_icon_button.dart';
 
@@ -20,10 +21,9 @@ class SettingsPageState extends State<SettingsPage> {
         text: 'E-mail Support', icon: FontAwesomeIcons.envelope),
     const SettingItemModel(
         text: 'Restore Purchase', icon: FontAwesomeIcons.rotate),
-    const SettingItemModel(text: 'Share Ask Al', icon: Icons.ios_share),
-    const SettingItemModel(text: 'About', icon: FontAwesomeIcons.circleInfo),
     const SettingItemModel(
         text: 'Share Ask AI', icon: FontAwesomeIcons.arrowUpFromBracket),
+    const SettingItemModel(text: 'About', icon: FontAwesomeIcons.circleInfo),
     const SettingItemModel(
         text: 'Like us, Rate us?', icon: FontAwesomeIcons.star),
     const SettingItemModel(
@@ -141,7 +141,13 @@ class SettingsPageState extends State<SettingsPage> {
                       text: settingItems[index].text,
                       icon: settingItems[index].icon,
                       onPressed: () {
-                        _showConfirmationDialog(context);
+                        if (index == 2) {
+                          String message =
+                              'Please use this wonderful app. \n Google Play: https://google.play.com/ \n Apple Store: https://apps.apple.com';
+                          Share.share(message);
+                        } else {
+                          _showConfirmationDialog(context);
+                        }
                       });
                 },
               ),

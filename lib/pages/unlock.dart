@@ -1,5 +1,6 @@
 import 'package:chat/components/rounded_icon_button.dart';
 import 'package:chat/pages/home.dart';
+import 'package:chat/pages/onboarding3.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -34,7 +35,11 @@ class UnlockPageState extends State<UnlockPage> {
                     child: RoundedIconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
-                        // do something when button is pressed
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Onboarding3Page()),
+                        );
                       },
                     ),
                   ),
@@ -447,6 +452,9 @@ class UnlockPageState extends State<UnlockPage> {
                             builder: (context) => const HomePage()),
                       );
                     }),
+              ),
+              const SizedBox(
+                height: 60,
               ),
             ],
           ),

@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -50,10 +51,11 @@ class QuestionWidget extends StatelessWidget {
 
 class AnswerWidget extends StatelessWidget {
   final String widgetText; // Declare a final variable to hold the text
-
+  final bool flag;
   const AnswerWidget(
       {super.key,
-      required this.widgetText}); // Constructor to accept the text parameter
+      required this.widgetText,
+      required this.flag}); // Constructor to accept the text parameter
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +95,29 @@ class AnswerWidget extends StatelessWidget {
               )),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(widgetText,
-                softWrap: true,
-                style: GoogleFonts.lato(
-                  textStyle: const TextStyle(color: Colors.white, fontSize: 16),
-                )),
-          ), // Use the widgetText parameter as the text
+            child: flag
+                ? AnimatedTextKit(
+                    animatedTexts: [
+                      TyperAnimatedText(
+                        widgetText.trim().replaceFirst(RegExp(r'^\.\s*'), ''),
+                        textStyle: GoogleFonts.lato(
+                          textStyle: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                        speed: const Duration(milliseconds: 50),
+                      ),
+                    ],
+                    isRepeatingAnimation: false,
+                  )
+                : Text(
+                    widgetText.trim().replaceFirst(RegExp(r'^\.\s*'), ''),
+                    softWrap: true,
+                    style: GoogleFonts.lato(
+                      textStyle:
+                          const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+          ),
         ],
       ),
     );
