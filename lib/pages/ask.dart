@@ -10,6 +10,7 @@ import '../apis/chatgpt_api.dart';
 import '../components/rounded_icon_button.dart';
 import '../components/rounded_second_icon_button.dart';
 import '../components/typing_indicator.dart';
+import 'package:intl/intl.dart';
 
 class AskPage extends StatefulWidget {
   final String topic;
@@ -44,7 +45,10 @@ class AskPageState extends State<AskPage> {
           messages.add(ChatgptMessageModel(text: answer, flag: false));
         });
         _isTyping = false;
-        Future.delayed(const Duration(milliseconds: 150), () {});
+        DateTime now = DateTime.now();
+        String date = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+        GptService.addHistory(
+            question, answer.trim().replaceFirst(RegExp(r'^\.\s*'), ''), date);
       }
     });
   }
@@ -213,7 +217,7 @@ class AskPageState extends State<AskPage> {
             ),
             if (_isTyping) const TypingIndicator(),
             SizedBox(
-              height: 130,
+              height: 79,
               child: Stack(
                 children: [
                   Positioned.fill(

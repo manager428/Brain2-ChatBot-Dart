@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "854690207973",
+    "project_id": "brain2-52c87",
+    "storage_bucket": "brain2-52c87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854690207973:android:86971866e0aeb1fcd7dc0c",
+        "android_client_info": {
+          "package_name": "com.chatgpt.brain2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854690207973-a31lmlg47ptnai5gt287ikt5t5jaohts.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-j7UQBD-ZfObcNFLwl_1XuupOXBTWCTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854690207973-a31lmlg47ptnai5gt287ikt5t5jaohts.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

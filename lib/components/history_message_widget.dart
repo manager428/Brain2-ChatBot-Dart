@@ -1,12 +1,17 @@
+import 'package:chat/apis/chatgpt_api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:toast/toast.dart';
 
 class HistoryMessageWidget extends StatelessWidget {
-  final String widgetText; // Declare a final variable to hold the text
-
+  final String question; // Declare a final variable to hold the text
+  final String answer;
+  final String id;
   const HistoryMessageWidget(
       {super.key,
-      required this.widgetText}); // Constructor to accept the text parameter
+      required this.question,
+      required this.answer,
+      required this.id}); // Constructor to accept the text parameter
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class HistoryMessageWidget extends StatelessWidget {
                 SizedBox(
                   width: 190,
                   child: Text(
-                    "Interesting Science Facts from a Professor",
+                    question,
                     style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                           fontSize: 16,
@@ -38,11 +43,45 @@ class HistoryMessageWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Icon(
-                  Icons.more_horiz,
-                  color: Colors.white,
-                  size: 25,
-                )
+                PopupMenuButton<String>(
+                  icon: const Icon(
+                    Icons.more_horiz,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                  color: Colors.black,
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      value: id,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Delete',
+                            style: GoogleFonts.lato(
+                                textStyle:
+                                    const TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onSelected: (String id) {
+                    GptService.deleteHisotry(id).then((value) {
+                      Toast.show(
+                        'Successfully removed...',
+                        duration: 3,
+                        gravity: Toast.bottom,
+                        backgroundColor: Colors.green,
+                      );
+                    });
+                  },
+                ),
               ],
             ),
             Container(
@@ -66,7 +105,7 @@ class HistoryMessageWidget extends StatelessWidget {
                       BorderRadius.circular(30), // make the border radius here
                   border: Border.all(color: const Color(0xff644C8F), width: 1)),
               child: Text(
-                "Certainly! Here's an interesting sentence to kick things off: \"Science is the systematic and logical study of the natural world, based on ...",
+                answer,
                 style: GoogleFonts.lato(
                   textStyle: const TextStyle(
                     fontSize: 16,

@@ -1,5 +1,6 @@
 import 'package:chat/components/main_text_button.dart';
 import 'package:chat/pages/onboarding2.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,7 @@ import 'components/rounded_border_text.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Firebase.initializeApp();
   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }

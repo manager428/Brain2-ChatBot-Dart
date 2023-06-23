@@ -1,4 +1,8 @@
 import 'package:chat/components/history_message_widget.dart';
+import 'package:chat/models/history_message_model.dart';
+import 'package:chat/pages/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,9 +16,15 @@ class HistoryPage extends StatefulWidget {
 }
 
 class HistoryPageState extends State<HistoryPage> {
-  List<String> messages = ["test!", "test", "test", "test"];
+  List<String> messages = [];
+  late User? user;
+  String uid = '';
   @override
   Widget build(BuildContext context) {
+    user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user!.uid;
+    }
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -33,7 +43,11 @@ class HistoryPageState extends State<HistoryPage> {
                   child: RoundedIconButton(
                     icon: const Icon(Icons.arrow_back_ios_new),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
                     },
                   ),
                 ),
@@ -56,15 +70,36 @@ class HistoryPageState extends State<HistoryPage> {
                 ),
               ],
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: messages.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return const HistoryMessageWidget(
-                      widgetText:
-                          'Certainly! Here\'s an interesting sentence to kick things off: "Science is the systematic and logical study of the natural world, based on ...');
-                },
-              ),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('histories')
+                  .where('uid', isEqualTo: uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("Loading");
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      DocumentSnapshot document = snapshot.data!.docs[index];
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+
+                      return HistoryMessageWidget(
+                        question: data['question'],
+                        answer: data['answer'],
+                        id: data['id'],
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ],
         ),

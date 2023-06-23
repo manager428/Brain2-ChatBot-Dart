@@ -1,4 +1,4 @@
-package com.example.chat
+package com.chatgpt.brain2
 
 import io.flutter.embedding.android.FlutterActivity
 
